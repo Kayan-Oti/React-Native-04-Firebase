@@ -4,11 +4,14 @@ import estiloItem from './estiloItem';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { LivroFB } from '../../firebase/livroFB';
 
 function Item({ navigation, route }) {
 
-    const [item, setItem] = useState('');
-    const {operacao,setOperacao} = route.params;
+    const [item, setItem] = useState({});
+    const {operacao, setOperacao} = route.params;
+
+    const livroFb = new LivroFB();
 
     useEffect(() => {
         setItem(route.params.item);
@@ -18,9 +21,15 @@ function Item({ navigation, route }) {
         navigation.navigate('Inicial')
     }
     
-    const salvar = () => { }
+    const salvar = (item) => {
+        oprecao == 'adicionar' ? livroFB.Fb.adicionarLivro(item) : livroFb.editarLivro(item);
+        voltar();
+    }
 
-    const remover = () => { }
+    const remover = (item) => {
+        livroFb.removerLivro(item);
+        voltar();
+    }
 
     return (
         <View style={estiloItem.container}>
@@ -52,8 +61,8 @@ function Item({ navigation, route }) {
                         style={estiloItem.campo}
                         placeholder="Autor"
                         placeholderTextColor='#FFFFFF'
-                        onChangeText={Autor => setItem(...item, Autor)}
-                        value={item.Autor}
+                        onChangeText={autor => setItem(...item, autor)}
+                        value={item.autor}
                     />
                 </View>
 
@@ -88,13 +97,13 @@ function Item({ navigation, route }) {
 
                 <View style={estiloItem.botoesContainer}>
 
-                    <TouchableOpacity onPress={salvar} style={estiloItem.botaoContainer}>
+                    <TouchableOpacity onPress={() => salvar(item)} style={estiloItem.botaoContainer}>
                         <LinearGradient colors={['#4c669f', '#192f6a', '#081a31']} style={estiloItem.botao}>
                             <MaterialIcons name="save" size={28} color="white" />
                         </LinearGradient>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={remover} style={estiloItem.botaoContainer}>
+                    <TouchableOpacity onPress={() => remover(item)} style={estiloItem.botaoContainer}>
                         <LinearGradient colors={['#4c669f', '#192f6a', '#081a31']} style={estiloItem.botao}>
                             <MaterialIcons name="delete" size={28} color="white" />
                         </LinearGradient>
